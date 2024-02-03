@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 
 const todoSlice = createSlice({
   name: 'todos',
-  initialState: { todos: [] },
+  initialState: { todos: [], currentTodo: null },
   reducers: {
     addTodo: {
       prepare(text) {
@@ -14,10 +14,16 @@ const todoSlice = createSlice({
       },
     },
     removeTodo(state, action) {
-      state.todos = state.todos.filter(todo => todo.id !== action.payload);
+      return {
+        ...state,
+        todos: state.todos.filter(todo => todo.id !== action.payload),
+      };
+    },
+    setCurrentTodo(state, action) {
+      state.currentTodo = action.payload;
     },
   },
 });
 
 export const todoReducer = todoSlice.reducer;
-export const { addTodo, removeTodo } = todoSlice.actions;
+export const { addTodo, removeTodo, setCurrentTodo } = todoSlice.actions;

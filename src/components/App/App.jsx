@@ -1,56 +1,30 @@
-import { nanoid } from 'nanoid';
-import { useLocalStorage } from 'hooks';
-
 import {
   Container,
-  Grid,
-  GridItem,
   Header,
   SearchForm,
   Section,
   Text,
-  Todo,
+  TodoList,
 } from 'components';
+import { EditForm } from 'components/EditForm/EditForm';
+import { useSelector } from 'react-redux';
+import { selectCurrentTodo, selectTodo } from 'todosRedux/selectors';
 
 export const App = () => {
-  const [todos, setTodos] = useLocalStorage('todos', []);
-
-  const addTodo = text => {
-    const todo = {
-      id: nanoid(),
-      text,
-    };
-
-    setTodos(prevState => [...prevState, todo]);
-  };
-
-  const deleteTodo = id => {
-    setTodos(prevState => prevState.filter(todo => todo.id !== id));
-  };
+  const todos = useSelector(selectTodo);
+  const currentTodo = useSelector(selectCurrentTodo);
   return (
     <>
       <Header />
       <Section>
         <Container>
-          <SearchForm onSubmit={addTodo} />
+          {currentTodo ? <EditForm /> : <SearchForm />}
 
-          {todos.length === 0 && (
+          {todos.length === 0 ? (
             <Text textAlign="center">There are no any todos ... </Text>
+          ) : (
+            <TodoList />
           )}
-
-          <Grid>
-            {todos.length > 0 &&
-              todos.map((todo, index) => (
-                <GridItem key={todo.id}>
-                  <Todo
-                    id={todo.id}
-                    text={todo.text}
-                    counter={index + 1}
-                    onClick={deleteTodo}
-                  />
-                </GridItem>
-              ))}
-          </Grid>
         </Container>
       </Section>
     </>
